@@ -43,11 +43,6 @@ namespace UrlShortenerApi.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_on_utc");
 
-                    b.Property<string>("ShortUrl")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("short_url");
-
                     b.HasKey("Id")
                         .HasName("pk_shortened_urls");
 

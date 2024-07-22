@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.EntityFrameworkCore;
 using UrlShortenerApi.Configurations;
 using UrlShortenerApi.Data;
 using UrlShortenerApi.Models;
@@ -20,13 +21,14 @@ namespace UrlShortenerApi.Services
 
         public async Task<ShortenedUrl> GenerateShortenedUrlAsync(string url)
         {         
+            var domain = Environment.GetEnvironmentVariable("Domain");
             var code = await GenerateUniqueCode();
 
             var shortenedUrl = new ShortenedUrl()
             {
                 Code = code,
                 BaseUrl = url,
-                ShortUrl = $"{_httpContextAccessor.HttpContext!.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}/{code}",
+                ShortUrl = $"{domain}/{code}",
                 CreatedOnUtc = DateTime.UtcNow
             };
 

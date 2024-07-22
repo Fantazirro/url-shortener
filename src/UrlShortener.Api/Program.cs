@@ -33,7 +33,7 @@ app.UseCors(builder => builder
     .AllowAnyHeader()
     .AllowAnyMethod());
 
-app.MapGet("{code}", async Task<IResult> (
+app.MapGet("/api/{code}", async Task<IResult> (
     string code,
     DatabaseService databaseService,
     CacheService cacheService) =>
@@ -49,7 +49,7 @@ app.MapGet("{code}", async Task<IResult> (
     return Results.Redirect(shortenedUrl.BaseUrl);
 });
 
-app.MapPost("/", async (
+app.MapPost("/api/", async (
     [FromBody] ShortenedUrlRequest request,
     UrlShorteningService urlShorteningService,
     DatabaseService databaseService,

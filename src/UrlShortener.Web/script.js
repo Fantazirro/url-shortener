@@ -1,5 +1,4 @@
-
-const apiurl = "http://localhost:8080/";
+const apiurl = "api/";
 
 async function submit_url() {
     document.getElementById("load_svg").classList.toggle("d-none");
@@ -19,10 +18,10 @@ async function submit_url() {
     })
 
     console.log(response)
+    document.getElementById("load_svg").classList.toggle("d-none");   
 
     if (response.ok) 
     { 
-        document.getElementById("load_svg").classList.toggle("d-none");   
         document.getElementById("short_url").classList.toggle("d-none");
         document.getElementById("shortened_url").value = await response.json();
     } 
