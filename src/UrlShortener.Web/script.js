@@ -6,8 +6,6 @@ async function submit_url() {
     var url = document.getElementById("form_text").value;
     var request = { url: url }
 
-    console.log(url);
-
     const response = await fetch(apiurl, {
         method: "post",
         body: JSON.stringify(request),
@@ -15,9 +13,8 @@ async function submit_url() {
             'Accept': 'application/json, text/plain',
             'Content-Type': 'application/json;charset=UTF-8'
         }
-    })
+    });
 
-    console.log(response)
     document.getElementById("load_svg").classList.toggle("d-none");   
 
     if (response.ok) 
