@@ -1,33 +1,28 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
-using UrlShortenerApi.Models;
 
 namespace UrlShortenerApi.Services
 {
-    public class CacheService
+    public class CacheService(IDistributedCache cache)
     {
-        private readonly IDistributedCache _cache;
+        public record CacheItem<T>(bool Success, T Value);
 
-        public CacheService(IDistributedCache cache)
+        public async Task<CacheItem<T>> GetAsync<T>(string key)
         {
-            _cache = cache;
+            var serializedValue = await cache.GetStringAsync(key);
+            if (serializedValue is null) return new(false, default!);
+
+            var value = JsonSerializer.Deserialize<T>(serializedValue)!;
+            return new(true, value);
         }
 
-        public async Task<ShortenedUrl?> GetCachedUrlAsync(string code)
+        public async Task SetAsync<T>(string key, T value, TimeSpan expirationTime)
         {
-            var cachedUrl = await _cache.GetStringAsync(code);
-            if (cachedUrl == null) return null;
+            var serializedValue = JsonSerializer.Serialize(value);
 
-            var deserializedUrl = JsonSerializer.Deserialize<ShortenedUrl>(cachedUrl)!;
-            return deserializedUrl;
-        }
-
-        public async Task SetCacheAsync(ShortenedUrl shortenedUrl)
-        {
-            var serialized = JsonSerializer.Serialize(shortenedUrl);
-            await _cache.SetStringAsync(shortenedUrl.Code, serialized, new DistributedCacheEntryOptions()
+            await cache.SetStringAsync(key, serializedValue, new DistributedCacheEntryOptions()
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15)
+                AbsoluteExpirationRelativeToNow = expirationTime
             });
         }
     }

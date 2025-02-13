@@ -1,24 +1,12 @@
-﻿using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using UrlShortenerApi.Configurations;
 using UrlShortenerApi.Data;
 using UrlShortenerApi.Models;
 
 namespace UrlShortenerApi.Services
 {
-    public class UrlShorteningService
+    public class UrlShorteningService(ApplicationDbContext dbContext)
     {
-        private readonly Random _random;
-        private readonly ApplicationDbContext _dbContext;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
-        public UrlShorteningService(ApplicationDbContext context, IHttpContextAccessor contextAccessor)
-        {
-            _random = new Random();
-            _dbContext = context;
-            _httpContextAccessor = contextAccessor;
-        }
-
         public async Task<ShortenedUrl> GenerateShortenedUrlAsync(string url)
         {         
             var domain = Environment.GetEnvironmentVariable("Domain");
@@ -40,7 +28,7 @@ namespace UrlShortenerApi.Services
             while (true)
             {
                 var code = GenerateCode();
-                var codeExists = await _dbContext.ShortenedUrls.AnyAsync(u => u.Code == code);
+                var codeExists = await dbContext.ShortenedUrls.AnyAsync(u => u.Code == code);
                 if (!codeExists) return code;
             }
         }
@@ -51,7 +39,7 @@ namespace UrlShortenerApi.Services
             
             for (int i = 0; i < code.Length; i++)
             {
-                var currentCharIndex = _random.Next(0, UrlShortenerConfiguration.AlphabetSize);
+                var currentCharIndex = new Random().Next(0, UrlShortenerConfiguration.AlphabetSize);
                 code[i] = UrlShortenerConfiguration.Alphabet[currentCharIndex];
             }
 
