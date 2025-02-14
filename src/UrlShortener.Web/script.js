@@ -1,35 +1,50 @@
-const apiurl = "api/";
+const apiurl = "http://localhost/api";
 
-async function submit_url() {
-    document.getElementById("load_svg").classList.toggle("d-none");
+document.getElementById("year").textContent = new Date().getFullYear();
 
-    var url = document.getElementById("form_text").value;
-    var request = { url: url }
+const shortenBtn = document.getElementById("shorten-btn");
+const urlInput = document.getElementById("url-input");
+const loader = document.getElementById("loader");
+const result = document.getElementById("result");
+const shortenedUrl = document.getElementById("shortened-url");
+const copyBtn = document.getElementById("copy-btn");
 
-    const response = await fetch(apiurl, {
-        method: "post",
-        body: JSON.stringify(request),
-        headers: {
-            'Accept': 'application/json, text/plain',
-            'Content-Type': 'application/json;charset=UTF-8'
+shortenBtn.addEventListener("click", async () => {
+    if (!urlInput.value) return;
+
+    result.classList.remove("flex");
+    result.classList.add("d-none");
+    
+    loader.classList.remove("d-none");
+    
+    try {
+        const response = await fetch(apiurl, {
+            method: "post",
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-Type': 'application/json;charset=UTF-8'
+            },
+            body: JSON.stringify({ url: urlInput.value })
+        });
+        
+        if (response.ok) {
+            result.classList.remove("d-none");
+            result.classList.add("flex");
+
+            const data = await response.json();
+            shortenedUrl.value = data;
+            result.classList.remove("d-none");
         }
-    });
 
-    document.getElementById("load_svg").classList.toggle("d-none");   
-
-    if (response.ok) 
-    { 
-        document.getElementById("short_url").classList.toggle("d-none");
-        document.getElementById("shortened_url").value = await response.json();
-    } 
-    else {
-        alert("Ошибка HTTP: " + response.statusText);
     }
-}
+    catch (error) {
+        console.error(error);
+    }
+    finally {
+        loader.classList.add("d-none");
+    }
+});
 
-function copy_url() {
-    var short_url = document.getElementById("shortened_url");
-    short_url.select();
-    document.execCommand("copy");
-    alert("URL скопирован в буфер обмена");
-}
+copyBtn.addEventListener("click", () => {
+    navigator.clipboard.writeText(shortenedUrl.value);
+});
