@@ -1,8 +1,8 @@
-version: '3'
-
 services:
   backend:
-    image: url-shortener
+    build:
+      context: .
+      dockerfile: ./Dockerfile
     container_name: url-shortener
     ports:
       - 8080:8080
@@ -10,9 +10,11 @@ services:
       - url-shortener-network
     environment:
       Domain: localhost
-      PostgreSqlConnection: Server=postgres-db;Port=5432;Database=url-shortener;User Id=postgres;Password=postgres
-      RedisConnection: redis-cache
-    command: ["dotnet", "ef", "database update"]
+      ConnectionStrings:PostgreSqlConnection: Server=postgres-db;Port=5432;Database=url-shortener;User Id=postgres;Password=postgres
+      ConnectionStrings:RedisConnection: redis-cache
+    depends_on:
+      - postgres-db
+      - redis-cache
 
   postgres-db:
     image: postgres
@@ -41,6 +43,8 @@ services:
       - 80:80
     networks:
       - url-shortener-network
+    depends_on:
+      - backend
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - ./src/UrlShortener.Web/:/app/
