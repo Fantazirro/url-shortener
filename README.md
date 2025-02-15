@@ -1,22 +1,35 @@
 # Url Shortener
-This application allows you to make URLs shorter  
-This is my first project that I did during my programming learning
+Это Web API, который создаёт короткие URL-адреса, которые перенаправляют на другие сайты
 
-## Technology Stack
-**Backend**:    ASP.NET Core  
-**Frontend**:   HTML, CSS, JS  
-**Database**:   PostgreSQL  
-**Cache**:      Redis  
-**Web Server**: Nginx  
-**Containers**: Docker  
+## Настройка сервиса
+Настроить сервис можно с помощью следующих файлов конфигурации:
+* **appsettings.json** - конфигурация и настройка API
+* **compose.yml** - конфигурация всей системы
 
-## Running application using Docker
-First of all, you must have Docker and Docker Compose installed
-You can run the application using Docker using this command:
+## Запуск системы
+Для запуска системы вам нужны следующие инструменты: Docker и Docker Compose  
+
+Команда для запуска:
+```bash
+sudo docker compose up --build
 ```
-bash app_run.sh
-```
-This script builds the backend image if it doesn't exist and starts all services
 
-## Special Thanks
-Special thanks to [Arseniy Marakov (athranax)](https://github.com/arsikmar), who made the frontend part for this project
+## Доступные эндпоинты
+* **GET /api/{code}** - переход на сайт по короткому URL-адресу
+* **POST /api** - создание короткой ссылки
+  - **request** - объект, содержащий изначальный URL-адрес
+
+Также список доступных эндпоинтов можно узнать с помощью инструмента Swagger
+
+## Стек технологий
+* **Web API**: ASP.NET Core  
+* **Фронтенд**: HTML, CSS, JS  
+* **База данных**: PostgreSQL  
+* **Кэш-сервер**: Redis  
+* **Прокси**: Nginx  
+* **Контейнеризация**: Docker
+
+## Библиотеки и фреймворки
+* **Entity Framework Core** - для подключения к базе данных
+* **Swagger** - для документирования API
+* **Microsoft.Extensions.Caching.StackExchangeRedis** - для подключения к кэш-серверу
