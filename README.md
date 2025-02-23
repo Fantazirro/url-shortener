@@ -1,6 +1,11 @@
 # Url Shortener
 Это Web API, который создаёт короткие URL-адреса, которые перенаправляют на другие сайты
 
+<h3 align="center">Главная страница</h3>
+<p align="center">
+<img src="https://i.imgur.com/lfr5PoR.jpeg" alt="Url Shortener" height="400" style="align:center;"/>
+</p>
+
 ## Настройка сервиса
 Настроить сервис можно с помощью следующих файлов конфигурации:
 * **appsettings.json** - конфигурация и настройка API
